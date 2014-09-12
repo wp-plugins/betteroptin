@@ -1,14 +1,14 @@
 === BetterOptin ===
-Contributors: themeavenue;julien731,siamkreative
+Contributors: themeavenue,julien731,siamkreative
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KADEESTQ9H3GW
-Tags: popup,lightbox,modal,opt-in,lead generation,e-mail,newsletter,marketing,pop-up,optin,subscription,mailchimp,mailpoet,aweber
+Tags: popup,lightbox,modal,opt-in,lead generation,e-mail,newsletter,marketing,pop-up,optin,subscription,mailchimp,mailpoet,aweber,exit-intent
 Requires at least: 3.5.1
 Tested up to: 4.0
 Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-BetterOptin is the easiest solution to create beautiful opt-in popups for WordPress.
+BetterOptin is the easiest solution to create beautiful and efficient opt-in popups for WordPress.
 
 == Description ==
 
@@ -93,13 +93,9 @@ Wanna know what's coming next in BetterOptin? [Check out the roadmap](https://tr
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
 1. Upload `better-optin` to the `/wp-content/plugins/` directory or upload `betteroptin.zip` through your WordPress admin
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Create your first popup in the `Popups` menu
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Create your first popup in the `Popups` menu
 
 == Frequently Asked Questions ==
 
@@ -129,6 +125,9 @@ For support please visit the [GitHub repo](https://github.com/ThemeAvenue/Better
 * First stable release
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Version 1.0.1 is no more officially supported. Only version 1.2.0 and above will be supported by the team.
 
 = 1.0.1 =
 This version add a few new features that are not essential, but it also fixes a couple of bugs.
