@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: popup,lightbox,modal,opt-in,lead generation,e-mail,newsletter,marketing,pop-up,optin,subscription,mailchimp,mailpoet,aweber,exit-intent
 Requires at least: 3.5.1
 Tested up to: 4.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,6 +123,9 @@ You will now only see the leads you collected with BetterOptin.
 
 == Changelog ==
 
+= 1.2.1 =
+* Add direct link to leads for the WordPress integration
+
 = 1.2.0 =
 * Release of the plugin's core for free
 
@@ -137,6 +140,9 @@ You will now only see the leads you collected with BetterOptin.
 * First stable release
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+It's now even easier to retrieve the leads collected by BetterOptin from the WordPress database.
 
 = 1.2.0 =
 Version 1.0.1 is no more officially supported. Only version 1.2.0 and above will be supported by the team.
