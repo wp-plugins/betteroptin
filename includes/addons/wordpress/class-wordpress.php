@@ -4,6 +4,12 @@ class WPBO_WordPress extends WPBO_Submit {
 	public function __construct( $main = false ) {
 
 		global $post;
+
+		/**
+		 * Load the parent's constructor in order to correctly get
+		 * the popup and post IDs.
+		 */
+		parent::__construct();
 		
 		/**
 		 * Set vars
@@ -64,9 +70,6 @@ class WPBO_WordPress extends WPBO_Submit {
 
 		/* Insertion is successfull */
 		if( !is_wp_error( $user ) ) {
-
-			/* Notify admin and user */
-			wp_new_user_notification( $user, $this->password );
 
 			/* Add a marker in user meta */
 			add_user_meta( $user, 'wpbo_subscription', 'yes', true );
@@ -226,8 +229,8 @@ class WPBO_WordPress extends WPBO_Submit {
 		$args = array(
 			'user_email'   => sanitize_email( $_POST['wpbo_email'] ),
 			'user_login'   => sanitize_email( $_POST['wpbo_email'] ),
-			'first_name'   => $extra['first_name'],
-			'display_name' => $extra['first_name'],
+			'first_name'   => isset( $extra['first_name'] ) ? $extra['first_name'] : $_POST['wpbo_email'],
+			'display_name' => isset( $extra['first_name'] ) ? $extra['first_name'] : $_POST['wpbo_email'],
 			'user_pass'    => md5( $this->password ),
 			'role'         => $this->role
 		);

@@ -22,7 +22,7 @@ class Better_Optin {
 	 *
 	 * @var     string
 	 */
-	const VERSION = '1.2.1';
+	const VERSION = '1.2.2';
 
 	/**
 	 * The variable name is used as the text domain when internationalizing strings
@@ -52,27 +52,36 @@ class Better_Optin {
 	 */
 	private function __construct() {
 
-		// Load plugin text domain
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-
-		// Activate plugin when new blog is added
-		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
-
-		// Load public-facing style sheet and JavaScript.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		// Register post type
-		add_action( 'init', array( $this, 'register_post_type' ) );
-
-		// Add popup settings and markup
-		add_action( 'wp_head', array( $this, 'popup_settings' ) );
-		add_action( 'wp_footer', array( $this, 'popup' ) );
-		add_action( 'wp_footer', array( $this, 'submission_confirmation' ), 999 );
-
 		/* Check posts associations */
 		add_action( 'wp_ajax_wpbo_new_impression',  array( $this, 'new_impression' ) );
 		add_action( 'wp_ajax_nopriv_wpbo_new_impression',  array( $this, 'new_impression' ) );
+
+		/* The following shouldn't be loaded during Ajax requests */
+		if ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) {
+
+			/* Load plugin text domain */
+			add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+			/* Activate plugin when new blog is added */
+			add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
+
+			/* Load public-facing style sheet and JavaScript. */
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+			/* Register post type */
+			add_action( 'init', array( $this, 'register_post_type' ) );
+			add_filter( 'post_updated_messages', array( $this, 'popup_updated_messages' ) );
+
+			/* Add popup settings and markup */
+			add_action( 'wp_head', array( $this, 'popup_settings' ) );
+			add_action( 'wp_footer', array( $this, 'popup' ) );
+			add_action( 'wp_footer', array( $this, 'submission_confirmation' ), 999 );
+
+			/* Add a direct link to today's stats */
+			add_action( 'admin_bar_menu', array( $this, 'admin_bar_conversion_rate' ), 999 );
+
+		}
 
 	}
 
@@ -137,44 +146,6 @@ class Better_Optin {
 
 		} else {
 			self::single_activate();
-		}
-
-	}
-
-	/**
-	 * Fired when the plugin is deactivated.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param    boolean    $network_wide    True if WPMU superadmin uses
-	 *                                       "Network Deactivate" action, false if
-	 *                                       WPMU is disabled or plugin is
-	 *                                       deactivated on an individual blog.
-	 */
-	public static function deactivate( $network_wide ) {
-
-		if ( function_exists( 'is_multisite' ) && is_multisite() ) {
-
-			if ( $network_wide ) {
-
-				// Get all blog ids
-				$blog_ids = self::get_blog_ids();
-
-				foreach ( $blog_ids as $blog_id ) {
-
-					switch_to_blog( $blog_id );
-					self::single_deactivate();
-
-				}
-
-				restore_current_blog();
-
-			} else {
-				self::single_deactivate();
-			}
-
-		} else {
-			self::single_deactivate();
 		}
 
 	}
@@ -254,11 +225,9 @@ class Better_Optin {
 	 */
 	public function load_plugin_textdomain() {
 
-		$domain = $this->plugin_slug;
-		$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
+		$locale = apply_filters( 'plugin_locale', get_locale(), 'wpbo' );
 
-		load_textdomain( $domain, trailingslashit( WP_LANG_DIR ) . $domain . '/' . $domain . '-' . $locale . '.mo' );
-		load_plugin_textdomain( $domain, FALSE, basename( plugin_dir_path( dirname( __FILE__ ) ) ) . '/languages/' );
+		load_plugin_textdomain( 'wpbo', FALSE, basename( plugin_dir_path( dirname( __FILE__ ) ) ) . '/languages/' );
 
 	}
 
@@ -323,6 +292,11 @@ class Better_Optin {
 			return;
 
 		$settings = get_post_meta( $this->is_popup_available(), '_wpbo_settings', true );
+
+		/**
+		 * Check if we can display the credit.
+		 */
+		$settings['credit'] = ( true === boolval( wpbo_get_option( 'show_credit', true ) ) ) ? true : false;
 
 		/**
 		 * Use booleans
@@ -406,6 +380,57 @@ class Better_Optin {
 
 		register_post_type( 'wpbo-popup', $args );
 
+	}
+
+	/**
+	 * Popup update messages.
+	 *
+	 * See /wp-admin/edit-form-advanced.php
+	 *
+	 * @since  1.2.2
+	 * @param  array $messages Existing post update messages.
+	 * @return array           Amended post update messages with new CPT update messages.
+	 */
+	function popup_updated_messages( $messages ) {
+
+		$post             = get_post();
+		$post_type        = get_post_type( $post );
+		$post_type_object = get_post_type_object( $post_type );
+
+		$messages['wpbo-popup'] = array(
+			0  => '', // Unused. Messages start at index 1.
+			1  => __( 'Popup updated.', 'wpbo' ),
+			2  => __( 'Custom field updated.', 'wpbo' ),
+			3  => __( 'Custom field deleted.', 'wpbo' ),
+			4  => __( 'Popup updated.', 'wpbo' ),
+			/* translators: %s: date and time of the revision */
+			5  => isset( $_GET['revision'] ) ? sprintf( __( 'Popup restored to revision from %s', 'wpbo' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			6  => __( 'Popup published.', 'wpbo' ),
+			7  => __( 'Popup saved.', 'wpbo' ),
+			8  => __( 'Popup submitted.', 'wpbo' ),
+			9  => sprintf(
+				__( 'Popup scheduled for: <strong>%1$s</strong>.', 'wpbo' ),
+				// translators: Publish box date format, see http://php.net/date
+				date_i18n( __( 'M j, Y @ G:i', 'wpbo' ), strtotime( $post->post_date ) )
+			),
+			10 => __( 'Popup draft updated.', 'wpbo' )
+		);
+
+		if ( $post_type_object->publicly_queryable ) {
+			$permalink = get_permalink( $post->ID );
+
+			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), __( 'View popup', 'wpbo' ) );
+			$messages[ $post_type ][1] .= $view_link;
+			$messages[ $post_type ][6] .= $view_link;
+			$messages[ $post_type ][9] .= $view_link;
+
+			$preview_permalink = add_query_arg( 'preview', 'true', $permalink );
+			$preview_link = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), __( 'Preview popup', 'wpbo' ) );
+			$messages[ $post_type ][8]  .= $preview_link;
+			$messages[ $post_type ][10] .= $preview_link;
+		}
+
+		return $messages;
 	}
 
 	/**
@@ -559,8 +584,9 @@ class Better_Optin {
 		$popup_id = $this->is_popup_available();
 		$output   = false;
 
-		if( false === $popup_id )
+		if ( false === $popup_id ) {
 			return;
+		}
 
 		/**
 		 * wpbo_popup_output hook
@@ -785,6 +811,34 @@ class Better_Optin {
 		}
 
 		return 'unknown';
+
+	}
+
+	/**
+	 * Today's Conversion Rate.
+	 *
+	 * Adds today's conversion rate in the admin bar with
+	 * a direct link to the stats page.
+	 *
+	 * @since  1.2.2
+	 * @param  object $wp_admin_bar The global admin bar object
+	 * @return void
+	 */
+	public function admin_bar_conversion_rate( $wp_admin_bar ) {
+
+		/* Get today's conversion rate. */
+		$rate = wpbo_today_conversion();
+
+		/* Set the node parameters. */
+		$args = array(
+			'id'    => 'wpbo_today_conversion',
+			'title' => sprintf( __( 'Today\'s Conversion: %s', 'wpbo' ), "$rate%" ),
+			'href'  => admin_url( 'edit.php?popup=all&period=today&post_type=wpbo-popup&page=wpbo-analytics' ),
+			'meta'  => array( 'class' => 'wpbo-today-conversion' )
+		);
+
+		/* Add the new node. */
+		$wp_admin_bar->add_node( $args );
 
 	}
 
