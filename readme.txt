@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: popup,lightbox,modal,opt-in,lead generation,e-mail,newsletter,marketing,pop-up,optin,subscription,mailchimp,mailpoet,aweber,exit-intent
 Requires at least: 3.5.1
 Tested up to: 4.0
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,6 +123,11 @@ You will now only see the leads you collected with BetterOptin.
 
 == Changelog ==
 
+= 1.2.3 =
+* Fix colorpicker not loading on popup customizer screen
+* Add link to the support in documentation page
+* Few small UX improvements
+
 = 1.2.2 =
 * Fix issue preventing from deactivating the plugin
 * Improve code style and performance
@@ -151,6 +156,9 @@ You will now only see the leads you collected with BetterOptin.
 * First stable release
 
 == Upgrade Notice ==
+
+= 1.2.3 =
+THis version fixes the issue with colorpicket not loading in the customizer page.
 
 = 1.2.2 =
 The errors preventing from deactivating the plugin are now fixed and a couple of neat details have been added to the plugin features.
