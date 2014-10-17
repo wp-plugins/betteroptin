@@ -46,9 +46,9 @@ By default, BetterOptin will save your leads as users in the WordPress database.
 
 However, if you prefer using a e-mail marketing provider, we provide premium addons for the following services:
 
-* [MailChimp](http://betteropt.in/downloads/mailchimp/)
-* [Aweber](http://betteropt.in/downloads/aweber/)
-* [MailPoet](http://betteropt.in/downloads/mailpoet/)
+* [MailChimp](http://betteropt.in/downloads/mailchimp/?utm_source=dotorg&utm_medium=readme&utm_term=organic&utm_campaign=betteroptin)
+* [Aweber](http://betteropt.in/downloads/aweber/?utm_source=dotorg&utm_medium=readme&utm_term=organic&utm_campaign=betteroptin)
+* [MailPoet](http://betteropt.in/downloads/mailpoet/?utm_source=dotorg&utm_medium=readme&utm_term=organic&utm_campaign=betteroptin)
 
 All the premium addons are available on the plugin's official site at [http://betteropt.in](http://betteropt.in).
 
