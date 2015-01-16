@@ -22,7 +22,7 @@ class Better_Optin {
 	 *
 	 * @var     string
 	 */
-	const VERSION = '1.2.3';
+	const VERSION = '1.2.4';
 
 	/**
 	 * The variable name is used as the text domain when internationalizing strings
@@ -241,7 +241,7 @@ class Better_Optin {
 
 		/* The WordPress addon is build-in the core plugin */
 		$load = array(
-			'WPBO_WordPress' => str_replace( array( '/public', '\public' ), '', plugin_dir_path( __FILE__ ) ) . 'includes/addons/wordpress/class-wordpress.php'
+			'WPBO_WordPress' => WPBO_PATH . 'includes/addons/wordpress/class-wordpress.php'
 		);
 
 		/* Get all the addons to load */

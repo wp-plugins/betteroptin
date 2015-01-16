@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: popup,lightbox,modal,opt-in,lead generation,e-mail,newsletter,marketing,pop-up,optin,subscription,mailchimp,mailpoet,aweber,exit-intent
 Requires at least: 3.5.1
 Tested up to: 4.0
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,6 +122,10 @@ You will now only see the leads you collected with BetterOptin.
 5. The popup visual editor
 
 == Changelog ==
+
+= 1.2.4 =
+* Fix potential issue with add-ons loading
+* Update Titan Framework
 
 = 1.2.3 =
 * Fix colorpicker not loading on popup customizer screen
